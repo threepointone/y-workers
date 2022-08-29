@@ -280,10 +280,6 @@ async function writeStateVector(
   );
 }
 
-/**
- * @param {Uint8Array} buf
- * @return {{ sv: Uint8Array, clock: number }}
- */
 function decodeLeveldbStateVector(buf: Uint8Array): {
   sv: Uint8Array;
   clock: number;
@@ -372,10 +368,7 @@ export class YDurableStorage {
     };
   }
 
-  /**
-   * @param {string} docName
-   */
-  flushDocument(docName: string) {
+  async flushDocument(docName: string): Promise<void> {
     return this._transact(async (db) => {
       const updates = await getLevelUpdates(db, docName);
       const { update, sv } = mergeUpdates(updates.map((u) => u.value));
@@ -383,11 +376,7 @@ export class YDurableStorage {
     });
   }
 
-  /**
-   * @param {string} docName
-   * @return {Promise<Y.Doc>}
-   */
-  getYDoc(docName: string): Promise<Y.Doc> {
+  async getYDoc(docName: string): Promise<Y.Doc> {
     return this._transact(async (db) => {
       const updates = await getLevelUpdates(db, docName);
       const ydoc = new Y.Doc();
@@ -408,11 +397,7 @@ export class YDurableStorage {
     });
   }
 
-  /**
-   * @param {string} docName
-   * @return {Promise<Uint8Array>}
-   */
-  getStateVector(docName: string): Promise<Uint8Array> {
+  async getStateVector(docName: string): Promise<Uint8Array> {
     return this._transact(async (db) => {
       const { clock, sv } = await readStateVector(db, docName);
       let curClock = -1;
@@ -431,12 +416,10 @@ export class YDurableStorage {
     });
   }
 
-  /**
-   * @param {string} docName
-   * @param {Uint8Array} update
-   * @return {Promise<number>} Returns the clock of the stored update
-   */
-  storeUpdate(docName: string, update: Uint8Array): Promise<number> {
+  async storeUpdate(
+    docName: string,
+    update: Uint8Array
+  ): Promise<number> /* Returns the clock of the stored update */ {
     return this._transact((db) => storeUpdate(db, docName, update));
   }
 }

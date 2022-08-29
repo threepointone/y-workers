@@ -8,29 +8,6 @@ export class WebSocketDurableObject extends createDurable({}) {
     super(state, env);
     this.storage = state.storage;
   }
-
-  // async keys() {
-  //   return (await this.storage.list({ limit: 200 })).keys();
-  // }
-
-  // async clearAll() {
-  //   await this.storage.deleteAll();
-  //   return Response.json({});
-  // }
-
-  // connect(docName: string) {
-  //   console.log("connection", docName);
-  //   const [client, server] = Object.values(new WebSocketPair());
-  //   server.accept();
-  //   setupWSConnection(server, docName, this.storage);
-  //   // Now we return the other end of the pair to the client.
-  //   return new Response(null, { status: 101, webSocket: client });
-  // }
-
-  // async fetch(req: Request): Promise<any> {
-  //   return super.fetch(req);
-  // }
-
   async fetch(request: Request) {
     // To accept the WebSocket request, we create a WebSocketPair (which is like a socketpair,
     // i.e. two WebSockets that talk to each other), we return one end of the pair in the
