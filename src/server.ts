@@ -233,11 +233,16 @@ function closeConn(doc: WSSharedDoc, conn: Connection) {
       docs.delete(doc.name);
     }
   }
-  conn.close();
+  try {
+    conn.close();
+  } catch (err) {
+    console.error("failed to close connection:", (err as Error).message);
+  }
 }
 
 function send(doc: WSSharedDoc, conn: Connection, m: Uint8Array) {
   if (
+    conn.readyState !== undefined &&
     conn.readyState !== wsReadyStateConnecting &&
     conn.readyState !== wsReadyStateOpen
   ) {
